@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using School_management_system.Helpers;
 
 namespace School_management_system.Controllers
 {
