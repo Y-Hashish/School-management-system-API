@@ -45,16 +45,36 @@ namespace School_management_system.Services
                 return new AuthModel { Message = errors };
             }
             await _userManager.AddToRoleAsync(user, $"{SD.Student}");
-            var token = await CreateTokenAsync(user);
+            //var token = await CreateTokenAsync(user);
             return new AuthModel
             {
                 Email = user.Email,
                 UserName = user.UserName,
-                ExpiresOn = token.ValidTo,
+                //ExpiresOn = token.ValidTo,
                 IsAuth = true,
                 Roles = new List<string> { $"{SD.Student}" },
-                Token = new JwtSecurityTokenHandler().WriteToken(token)
+                //Token = new JwtSecurityTokenHandler().WriteToken(token)
             };
+        }
+        public async Task<AuthModel> GenerateToken(LoginModel model)
+        {
+            var authmodel = new AuthModel();
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
+            {
+                authmodel.Message = "Email or Password is incorrect!";
+                return authmodel;
+            }
+            var token = await CreateTokenAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
+            authmodel.ExpiresOn = token.ValidTo;
+            authmodel.IsAuth = true;
+            authmodel.Email = user.Email;
+            authmodel.UserName = user.UserName;
+            authmodel.Roles = roles.ToList();
+            authmodel.Token = new JwtSecurityTokenHandler().WriteToken(token);
+            return authmodel;
         }
 
         public async Task<JwtSecurityToken> CreateTokenAsync(ApplicationUser user)

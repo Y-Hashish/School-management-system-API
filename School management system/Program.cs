@@ -39,7 +39,7 @@ namespace School_management_system
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("db")));
 
-            //JWT configuration
+            //JWT configuration ============>
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
