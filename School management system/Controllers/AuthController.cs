@@ -8,9 +8,9 @@ namespace School_management_system.Controllers
     [Route("api/[controller]")]
     public class AuthController : Controller
     {
-        private readonly AuthService _authService;
+        private readonly IAuthService _authService;
 
-        public AuthController(AuthService authService)
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
         }
@@ -25,7 +25,7 @@ namespace School_management_system.Controllers
             var result = await _authService.RegisterAsync(model);
             if(!result.IsAuth)
             {
-                BadRequest(result.Message);
+                return BadRequest(result.Message);
             }
             return Ok(result);
         }
@@ -36,7 +36,7 @@ namespace School_management_system.Controllers
                 return BadRequest(ModelState);
             var result = await _authService.GenerateToken(model);
             if(!result.IsAuth)
-                BadRequest(result.Message);
+                return BadRequest(result.Message);
             return Ok(result);
         }
     }
